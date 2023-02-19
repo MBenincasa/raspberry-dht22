@@ -12,7 +12,6 @@ while True:
         humidity = dhtDevice.humidity
         local_date = time.localtime()
         local_date_str = time.strftime("%Y-%m-%d %H:%M:%S", local_date)
-        print("{} -  T: {:.1f} C    H: {}% ".format(local_date_str, temperature_c, humidity))
 
         filename = time.strftime("dht22_data_%Y-%m-%d.csv")
         exists = os.path.exists(filename)
@@ -25,8 +24,7 @@ while True:
             csvfile.close()
 
     except (RuntimeError, Exception) as error:
-        print(error.args[0])
-        time.sleep(1.0)
+        time.sleep(2.0)
         continue
 
     time.sleep(1200.0)
