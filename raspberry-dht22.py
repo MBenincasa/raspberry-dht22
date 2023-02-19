@@ -6,17 +6,15 @@ dhtDevice = adafruit_dht.DHT22(board.D22)
 
 while True:
     try:
-        temperature = dhtDevice.temperature
+        temperature_c = dhtDevice.temperature
         humidity = dhtDevice.humidity
-        print(
-            "Temperature: {:.1f} C    Humidity: {}% ".format(
-                temperature, humidity
-            )
-        )
+        local_date = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        print("{} -  T: {:.1f} C    H: {}% ".format(local_date, temperature_c, humidity))
 
     except (RuntimeError, Exception) as error:
         print(error.args[0])
-        time.sleep(2.0)
+        time.sleep(1.0)
         continue
 
     time.sleep(5.0)
+    
