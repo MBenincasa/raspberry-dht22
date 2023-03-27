@@ -1,21 +1,27 @@
 function doGet(req) {
   var dateReq = req.parameter.date;
+  var pathLast = req.pathInfo;
   var doc = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = doc.getSheetByName("DATA");
   var values = sheet.getDataRange().getValues();
 
-  var output = []
-  for (var i = 1; i < values.length; i++) {
-    var row = {};
-    row['date'] = Utilities.formatDate(new Date(values[i][0]), "GMT+1", "yyyy-MM-dd");
-    row['time'] = values[i][1];
-    row['temperature'] = values[i][2];
-    row['humidity'] = values[i][3];
-    output.push(row);
+  var rows = values.slice(1).map(getRow);
+
+  if(pathLast === "last") {
+    return ContentService.createTextOutput(JSON.stringify({data: rows[rows.length - 1]})).setMimeType(ContentService.MimeType.JSON);
   }
 
   if (dateReq != null) {
-    output = output.filter(obj => obj.date == dateReq);
+    rows = rows.filter(obj => obj.date == dateReq);
   }
-  return ContentService.createTextOutput(JSON.stringify({data: output})).setMimeType(ContentService.MimeType.JSON);
+  return ContentService.createTextOutput(JSON.stringify({data: rows})).setMimeType(ContentService.MimeType.JSON);
+}
+
+function getRow(values) {
+  var row = {};
+  row['date'] = Utilities.formatDate(new Date(values[0]), "GMT+2", "yyyy-MM-dd");
+  row['time'] = values[1];
+  row['temperature'] = values[2];
+  row['humidity'] = values[3];
+  return row;
 }
