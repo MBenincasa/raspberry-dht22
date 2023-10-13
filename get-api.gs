@@ -23,5 +23,8 @@ function getRow(values) {
   row['time'] = values[1];
   row['temperature'] = values[2];
   row['humidity'] = values[3];
+  row['temperature_pero'] = values[4];
+  row['humidity_pero'] = values[5];
+  row['weather_description'] = values[6];
   return row;
 }
