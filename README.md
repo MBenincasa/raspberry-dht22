@@ -21,4 +21,7 @@ sudo apt-get install libgpiod2
 ```
 ### Script that reads data and adds it to a Google Sheet
 In addition to installing the Adafruit library that allows us to read data from the sensor, it will be necessary to install dependencies in order to use Google services.<p>
-[https://developers.google.com/sheets/api/quickstart/python](https://developers.google.com/sheets/api/quickstart/python?hl=it)
+[https://developers.google.com/sheets/api/quickstart/python](https://developers.google.com/sheets/api/quickstart/python)
+### Script that reads data and adds it to an AWS dynamoDB table
+In addition to installing the Adafruit library which allows us to read data from the sensor, it will be necessary to install dependencies to be able to use AWS dynamoDB services.<p>
+[https://boto3.amazonaws.com/v1/documentation/api/latest/guide/quickstart.html](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/quickstart.html)
