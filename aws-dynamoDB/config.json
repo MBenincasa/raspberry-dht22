@@ -1,0 +1,7 @@
+{
+    "aws_region": "<aws_region>",
+    "dynamodb_table_name": "<dynamodb_table_name>",
+    "aws_access_key_id": "<aws_access_key_id>",
+    "aws_secret_access_key": "<aws_secret_access_key>",
+    "openweathermap_api_key": "<openweathermap_api_key>"
+}

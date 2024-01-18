@@ -4,13 +4,20 @@ import adafruit_dht
 import requests
 import boto3
 from decimal import Decimal
+import json
 
-AWS_REGION = '<AWS_REGION>'
-DYNAMODB_TABLE_NAME = '<DYNAMODB_TABLE_NAME>'
-AWS_ACCESS_KEY_ID = '<AWS_ACCESS_KEY_ID>'
-AWS_SECRET_ACCESS_KEY = '<AWS_SECRET_ACCESS_KEY>'
+def read_config():
+    with open('config.json', 'r') as config_file:
+        config_data = json.load(config_file)
+    return config_data
 
-OPENWEATHERMAP_API_KEY = '<OPENWEATHERMAP_API_KEY>'
+config = read_config()
+
+AWS_REGION = config['aws_region']
+DYNAMODB_TABLE_NAME = config['dynamodb_table_name']
+AWS_ACCESS_KEY_ID = config['aws_access_key_id']
+AWS_SECRET_ACCESS_KEY = config['aws_secret_access_key']
+OPENWEATHERMAP_API_KEY = config['openweathermap_api_key']
 
 dynamodb = boto3.resource('dynamodb', region_name=AWS_REGION,
                           aws_access_key_id=AWS_ACCESS_KEY_ID,
