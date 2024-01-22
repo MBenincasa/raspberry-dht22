@@ -5,7 +5,6 @@ import requests
 import boto3
 from decimal import Decimal
 import json
-import hashlib
 
 def read_config():
     with open('config.json', 'r') as config_file:
@@ -58,12 +57,10 @@ def get_local_datetime():
     time_str = time.strftime("%H:%M:%S", local_date)
     datetime_str = f"{date_str} {time_str}"
     timestamp = time.mktime(time.strptime(datetime_str, "%Y-%m-%d %H:%M:%S"))
-    id = hashlib.md5(datetime_str.encode()).hexdigest()
-    return id, timestamp, date_str, time_str
+    return timestamp, date_str, time_str
 
-def write_to_dynamodb(id, timestamp, date_str, time_str, temperature_sensor_c, humidity_sensor, temperature_city, humidity_city, weather_description):
+def write_to_dynamodb(timestamp, date_str, time_str, temperature_sensor_c, humidity_sensor, temperature_city, humidity_city, weather_description):
     item = {
-        'id': id,
         'timestamp': Decimal(str(timestamp)),
         'date': date_str,
         'time': time_str,
@@ -80,9 +77,9 @@ if __name__ == "__main__":
         try:
             temperature_sensor_c, humidity_sensor = read_dht22_sensor()
             temperature_city, humidity_city, weather_description = read_openweathermap_data()
-            id, timestamp, date_str, time_str = get_local_datetime()
+            timestamp, date_str, time_str = get_local_datetime()
 
-            write_to_dynamodb(id, timestamp, date_str, time_str, temperature_sensor_c, humidity_sensor, temperature_city, humidity_city, weather_description)
+            write_to_dynamodb(timestamp, date_str, time_str, temperature_sensor_c, humidity_sensor, temperature_city, humidity_city, weather_description)
         except (RuntimeError, Exception) as error:
             time.sleep(5.0)
             continue

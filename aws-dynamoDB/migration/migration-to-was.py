@@ -3,7 +3,6 @@ import time
 import boto3
 from decimal import Decimal
 import json
-import hashlib
 
 def read_config():
     with open('config.json', 'r') as config_file:
@@ -45,12 +44,9 @@ def migration():
             datetime_str = f"{date_str} {time_str}"
             timestamp = time.mktime(time.strptime(datetime_str, "%Y-%m-%d %H:%M:%S"))
 
-            id = hashlib.md5(datetime_str.encode()).hexdigest()
-            print(f"id: {id}")
             print(f"Raw Values: {date_str}, {time_str}, {temperature_sensor_c}, {humidity_sensor}, {temperature_city}, {humidity_city}, {weather_description}")
 
             item = {
-                'id': id,
                 'timestamp': Decimal(str(timestamp)),
                 'date': date_str,
                 'time': time_str,
