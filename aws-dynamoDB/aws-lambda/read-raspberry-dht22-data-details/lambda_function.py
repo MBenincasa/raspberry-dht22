@@ -20,10 +20,10 @@ def lambda_handler(event, context):
     filter_date = event.get('event_item', None)
     items = None
 
-    response = table.query(
+    response_query = table.query(
         KeyConditionExpression=Key('date').eq(filter_date)
     )
-    items = response['Items']
+    items = response_query['Items']
     
     result_list = []
 
@@ -48,8 +48,12 @@ def lambda_handler(event, context):
             'weather_description': weather_description,
         })
 
-    result_list = sorted(result_list, key=lambda x: x['timestamp'])
+    response = {
+        'data': result_list
+        
+    }
+    
     return {
         'statusCode': 200,
-        'body': result_list
+        'body': response
     }
