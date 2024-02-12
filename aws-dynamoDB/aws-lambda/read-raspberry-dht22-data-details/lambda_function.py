@@ -53,6 +53,32 @@ def calculate_metrics(items):
 
     return temperature_metrics, humidity_metrics
 
+def filter_unique_pollution_data(items):
+    unique_items = []
+    pollution_set = set()
+    
+    for item in items:
+        if all(key in item for key in ['co_city', 'o3_city', 'nh3_city', 'no_city', 'no2_city', 'o3_city', 'pm10_city', 'pm2_5_city', 'so2_city', 'aqi_city']):
+            pollution_data = {
+                key: value for key, value in item.items() if key in ['co_city', 'o3_city', 'nh3_city', 'no_city', 'no2_city', 'o3_city', 'pm10_city', 'pm2_5_city', 'so2_city', 'aqi_city']
+            }
+            pollution_data_tuple = tuple(sorted(pollution_data.items()))
+        
+            if pollution_data_tuple not in pollution_set:
+                unique_items.append(item)
+                pollution_set.add(pollution_data_tuple)
+    
+    return unique_items
+
+def transform_pollution_items(items):
+    result_list = []
+    for item in items:
+        pollution_data = {
+            key: value for key, value in item.items() if key in ['time', 'date'] or key in ['co_city', 'o3_city', 'nh3_city', 'no_city', 'no2_city', 'o3_city', 'pm10_city', 'pm2_5_city', 'so2_city', 'aqi_city']
+        }
+        result_list.append(pollution_data)
+    return result_list
+
 def transform_items(items):
     result_list = []
     for item in items:
@@ -86,10 +112,13 @@ def lambda_handler(event, context):
     items = query_dynamodb(table, filter_date)
     
     result_list = transform_items(items)
+    pollution_items = filter_unique_pollution_data(items)
+    pollution_list = transform_pollution_items(pollution_items)
     temperature_metrics, humidity_metrics = calculate_metrics(items)
 
     response = {
-        'data': result_list,
+        'weather_data': result_list,
+        'pollution_data': pollution_list,
         'metrics': {
             'temperature': temperature_metrics,
             'humidity': humidity_metrics
