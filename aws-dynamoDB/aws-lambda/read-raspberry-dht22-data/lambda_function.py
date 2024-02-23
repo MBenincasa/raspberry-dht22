@@ -1,6 +1,7 @@
 import boto3
 import json
 from collections import defaultdict
+from datetime import datetime
 
 def get_config():
     config_file_path = 'config.json'
@@ -66,11 +67,22 @@ def lambda_handler(event, context):
     aggregated_data = aggregate_data(items)
     result_list = calculate_averages(aggregated_data)
     
-    result_list = sorted(result_list, key=lambda x: x['date'])
-    response = {
-        "data": result_list
-    }
+    grouped_results = defaultdict(list)
+    for item in result_list:
+        year_month = item['date'][:7]
+        grouped_results[year_month].append(item)
+
+    response_data = []
+    for year_month, data in grouped_results.items():
+        data_sorted = sorted(data, key=lambda x: datetime.strptime(x['date'], '%Y-%m-%d'))
+        response_data.append({
+            "date": year_month,
+            "aggregation": data_sorted
+        })
+    
+    response_data = sorted(response_data, key=lambda x: datetime.strptime(x['date'] + '-01', '%Y-%m-%d'))
+    
     return {
         'statusCode': 200,
-        'body': response
+        'body': {"weather_data": response_data}
     }
