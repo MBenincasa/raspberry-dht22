@@ -95,10 +95,10 @@ def transform_items(items):
             'timestamp': float(timestamp),
             'date': date,
             'time': time,
-            'temperature': float(temperature_sensor_c) if temperature_sensor_c is not None else None,
-            'temperature_pero': float(temperature_city) if temperature_city is not None else None,
-            'humidity': float(humidity_sensor) if humidity_sensor is not None else None,
-            'humidity_pero': float(humidity_city) if humidity_city is not None else None,
+            'temperature_sensor_c': float(temperature_sensor_c) if temperature_sensor_c is not None else None,
+            'temperature_city': float(temperature_city) if temperature_city is not None else None,
+            'humidity_sensor': float(humidity_sensor) if humidity_sensor is not None else None,
+            'humidity_city': float(humidity_city) if humidity_city is not None else None,
             'weather_description': weather_description,
         })
     return result_list
