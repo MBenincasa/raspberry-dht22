@@ -48,7 +48,7 @@ def calculate_pollution_averages(aggregated_data):
     return result_list
 
 def aggregate_weather_data(items):
-    aggregated_data = defaultdict(lambda: {"temperature_sensor_sum": 0, "humidity_sensor_sum": 0, "temperature_city_sum": 0, "humidity_city_sum": 0, "count": 0})
+    aggregated_data = defaultdict(lambda: {"temperature_sensor_sum": 0, "humidity_sensor_sum": 0, "temperature_city_sum": 0, "humidity_city_sum": 0, "count_sensor": 0, "count_city": 0})
     for item in items:
         date = item.get('date')
         temperature_sensor = item.get('temperature_sensor_c')
@@ -56,21 +56,24 @@ def aggregate_weather_data(items):
         temperature_city = item.get('temperature_city')
         humidity_city = item.get('humidity_city')
         
-        if all(v is not None for v in [date, temperature_sensor, humidity_sensor, temperature_city, humidity_city]):
+        if all(v is not None for v in [date, temperature_sensor, humidity_sensor]):
             aggregated_data[date]["temperature_sensor_sum"] += temperature_sensor
             aggregated_data[date]["humidity_sensor_sum"] += humidity_sensor
+            aggregated_data[date]["count_sensor"] += 1
+            
+        if all(v is not None for v in [date, temperature_city, humidity_city]):
             aggregated_data[date]["temperature_city_sum"] += temperature_city
             aggregated_data[date]["humidity_city_sum"] += humidity_city
-            aggregated_data[date]["count"] += 1
+            aggregated_data[date]["count_city"] += 1
     return aggregated_data
 
 def calculate_weather_averages(aggregated_data):
     result_list = []
     for date, data in aggregated_data.items():
-        temperature_sensor_avg = round(data["temperature_sensor_sum"] / data["count"], 2) if data["count"] > 0 else None
-        humidity_sensor_avg = round(data["humidity_sensor_sum"] / data["count"], 2) if data["count"] > 0 else None
-        temperature_city_avg = round(data["temperature_city_sum"] / data["count"], 2) if data["count"] > 0 else None
-        humidity_city_avg = round(data["humidity_city_sum"] / data["count"], 2) if data["count"] > 0 else None
+        temperature_sensor_avg = round(data["temperature_sensor_sum"] / data["count_sensor"], 2) if data["count_sensor"] > 0 else None
+        humidity_sensor_avg = round(data["humidity_sensor_sum"] / data["count_sensor"], 2) if data["count_sensor"] > 0 else None
+        temperature_city_avg = round(data["temperature_city_sum"] / data["count_city"], 2) if data["count_city"] > 0 else None
+        humidity_city_avg = round(data["humidity_city_sum"] / data["count_city"], 2) if data["count_city"] > 0 else None
         
         result_list.append({
             "date": date,
