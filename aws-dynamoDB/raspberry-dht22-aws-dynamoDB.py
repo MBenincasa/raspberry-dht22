@@ -46,7 +46,7 @@ def read_openweathermap_data():
         weather_data = response_openweathermap.json()
         temperature_city = weather_data['main']['temp']
         humidity_city = weather_data['main']['humidity']
-        weather_description = weather_data['weather'][0]['description']
+        weather_description = weather_data['weather'][0]['main']
         return temperature_city, humidity_city, weather_description
     except Exception as error:
         print(f"Error reading OpenWeatherMap data: {error}")
