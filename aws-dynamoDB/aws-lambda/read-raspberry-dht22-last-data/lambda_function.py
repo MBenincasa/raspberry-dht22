@@ -26,6 +26,17 @@ def query_dynamodb(table, filter_date):
     items = response_query['Items']
     return items
 
+def calculate_differences(penultimate_data, last_data):
+    differences = {
+        "temperature_city": last_data["temperature_city"] - penultimate_data["temperature_city"],
+        "humidity_sensor": last_data["humidity_sensor"] - penultimate_data["humidity_sensor"],
+        "temperature_sensor_c": last_data["temperature_sensor_c"] - penultimate_data["temperature_sensor_c"],
+        "humidity_city": last_data["humidity_city"] - penultimate_data["humidity_city"],
+        "date": penultimate_data["date"],
+        "time": penultimate_data["time"]
+    }
+    return differences
+
 def lambda_handler(event, context):
     config_file_path = 'config.json'
     config_data = load_config(config_file_path)
@@ -34,7 +45,15 @@ def lambda_handler(event, context):
     filter_date = event.get('event_item', None)
     items = query_dynamodb(table, filter_date)
 
-    response = {"last_data": items[-1]} if items else {"last_data": None}
+    if len(items) >= 2:
+        last_data = items[-1]
+        penultimate_data = items[-2]
+        differences = calculate_differences(penultimate_data, last_data)
+        response = {"last_data": items[-1], "differences": differences}
+    elif len(items) == 1:
+        response = {"last_data": items[-1], "differences": None}
+    else:
+        response = {"last_data": None, "differences": None}
 
     return {
         'statusCode': 200,
