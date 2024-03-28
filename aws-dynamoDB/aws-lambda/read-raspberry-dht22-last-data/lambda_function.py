@@ -45,9 +45,14 @@ def lambda_handler(event, context):
     filter_date = event.get('event_item', None)
     items = query_dynamodb(table, filter_date)
 
-    if len(items) >= 2:
+    if len(items) > 13:
         last_data = items[-1]
-        penultimate_data = items[-2]
+        penultimate_data = items[-13]
+        differences = calculate_differences(penultimate_data, last_data)
+        response = {"last_data": items[-1], "differences": differences}
+    elif len(items) >= 2 and len(items) <= 13:
+        last_data = items[-1]
+        penultimate_data = items[0]
         differences = calculate_differences(penultimate_data, last_data)
         response = {"last_data": items[-1], "differences": differences}
     elif len(items) == 1:
